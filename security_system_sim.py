@@ -1,22 +1,3 @@
-"""
-Garden Pest Deterrent System — AI Logic Simulation
------------------------------------------------------
-Simulates the PIR sensor, ESP32-CAM capture, and dual-buzzer hardware in
-software, while making REAL calls to the OpenAI API to identify a pest
-species in a photo, then simulating the species-specific deterrent tone.
-
-Use this to test/tune your AI prompt and frequency table before flashing
-firmware to real hardware.
-
-Usage:
-    export OPENAI_API_KEY="sk-..."
-    python security_system_sim.py --image path/to/photo.jpg
-    python security_system_sim.py --interactive   # press Enter to simulate PIR triggers,
-                                                    # cycles through images in ./sample_images/
-
-Requires:
-    pip install -r requirements.txt
-"""
 
 import argparse
 import base64
@@ -40,7 +21,7 @@ log = logging.getLogger("pest_deterrent")
 MODEL = "gpt-4o-mini"
 COOLDOWN_SECONDS = 5
 
-# ---- Pest -> deterrent profile lookup table -----------------------------
+# ---- Pest -> deterrent profile lookup table 
 # Frequencies are a starting point, not measured acoustics. Piezo buzzers
 # can't reach true ultrasonic range, so "high" here means the highest
 # practical pitch a cheap piezo disc reliably reproduces. Tune these
@@ -70,7 +51,6 @@ class ClassificationResult:
 
 
 class MotionSensor:
-    """Mocks a PIR sensor. In interactive mode, a keypress = motion event."""
 
     def trigger(self) -> bool:
         input("\n>> Press ENTER to simulate motion in the garden (Ctrl+C to quit)... ")
@@ -78,7 +58,6 @@ class MotionSensor:
 
 
 class Camera:
-    """Mocks the ESP32-CAM: 'captures' by loading a local image file."""
 
     def __init__(self, image_path: str):
         if not os.path.isfile(image_path):
@@ -92,7 +71,6 @@ class Camera:
 
 
 class AIAnalyzer:
-    """Sends the captured frame to OpenAI's vision-capable model to identify the pest."""
 
     PROMPT = (
         "You are a garden pest-camera AI. Identify the main subject of this "
@@ -131,7 +109,6 @@ class AIAnalyzer:
 
 
 class BuzzerController:
-    """Simulates two frequency-tuned buzzers with console output (no real hardware needed)."""
 
     def deter(self, pest: str, profile: PestProfile):
         buzzer_name = "HIGH-freq buzzer" if profile.buzzer == "high" else "LOW-freq buzzer"
